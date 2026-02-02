@@ -7,7 +7,7 @@ import {
   Button,
   Paper,
 } from "@mui/material";
-import { ArrowBack, Payment, Payments } from "@mui/icons-material";
+import { ArrowBack, Payments } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import useBooking from "./hook/useBooking";
 import {

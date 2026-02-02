@@ -1,5 +1,4 @@
-import { Box, Stack, Button } from "@mui/material";
-import { ArrowBack } from "@mui/icons-material";
+import { Box, Stack } from "@mui/material";
 import type { FormikProps } from "formik";
 import MobileNumberField from "./MobileNumberField";
 import SendOtpButton from "./SendOtpButton";

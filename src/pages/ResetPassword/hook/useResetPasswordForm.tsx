@@ -10,7 +10,6 @@ const useResetPasswordForm = () => {
       mobileNumber: mobileNumber || "",
       otp: "",
       newPassword: "",
-      confirmPassword: "",
     },
     validationSchema: yup.object({
       mobileNumber: yup
