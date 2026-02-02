@@ -5,44 +5,24 @@ import {
   Stack,
   Typography,
   Button,
-  Paper,
 } from "@mui/material";
-import { ArrowBack, Payment, Payments } from "@mui/icons-material";
+import { ArrowBack, EventAvailable } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import useBooking from "./hook/useBooking";
-import {
-  PlayerCountSelector,
-  PlayerDetailsForm,
-  PriceSummary,
-} from "./components";
+import useMatchDetail from "./hook/useMatchDetail";
+import { MatchInfo, MatchRules, PlayersJoined } from "./components";
 
-const Booking = () => {
-  const {
-    match,
-    loading,
-    numberOfPlayers,
-    players,
-    handleNumberOfPlayersChange,
-    handlePlayerChange,
-    getTotalAmount,
-    isFormValid,
-  } = useBooking();
+const MatchDetail = () => {
+  const { match, loading } = useMatchDetail();
   const navigate = useNavigate();
 
-  const handleBack = () => {
+  const handleBookSlot = () => {
     if (match) {
-      navigate(`/match/${match.id}`);
+      navigate(`/booking/${match.id}`);
     }
   };
 
-  const handleCompletePayment = () => {
-    console.log("Payment initiated", {
-      matchId: match?.id,
-      numberOfPlayers,
-      players,
-      totalAmount: getTotalAmount(),
-    });
-    alert("Payment feature will be integrated soon!");
+  const handleBack = () => {
+    navigate("/");
   };
 
   if (loading) {
@@ -59,7 +39,7 @@ const Booking = () => {
         <Stack spacing={2} alignItems="center">
           <CircularProgress size={50} />
           <Typography variant="body1" color="text.secondary">
-            Loading booking details...
+            Loading match details...
           </Typography>
         </Stack>
       </Box>
@@ -84,7 +64,7 @@ const Booking = () => {
     );
   }
 
-  const maxAvailable = match.maxPlayers - match.joinedPlayers;
+  const isFull = match.joinedPlayers >= match.maxPlayers;
 
   return (
     <Box
@@ -101,45 +81,18 @@ const Booking = () => {
           onClick={handleBack}
           sx={{ mb: 1, textTransform: "none" }}
         >
-          Back to Match Details
+          Back to Matches
         </Button>
 
-        <Paper
-          sx={{
-            p: 3,
-            mb: 2,
-            borderRadius: 2,
-            border: "1px solid #e5e7eb",
-          }}
-        >
-          <Typography variant="h5" fontWeight="600" color="text.primary" mb={1}>
-            Book Your Slot
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {match.title} -{" "}
-            {new Date(match.date).toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </Typography>
-        </Paper>
+        <Stack spacing={3}>
+          <MatchInfo match={match} />
 
-        <Stack spacing={2}>
-          <PlayerCountSelector
-            count={numberOfPlayers}
-            maxAvailable={maxAvailable}
-            onChange={handleNumberOfPlayersChange}
+          <MatchRules rules={match.rules} />
+
+          <PlayersJoined
+            players={match.players}
+            totalPlayers={match.maxPlayers}
           />
-
-          <PlayerDetailsForm players={players} onChange={handlePlayerChange} />
-
-          <PriceSummary
-            pricePerPlayer={match.pricePerPlayer}
-            numberOfPlayers={numberOfPlayers}
-            totalAmount={getTotalAmount()}
-          />
-
           <Box
             sx={{
               position: "fixed",
@@ -157,9 +110,9 @@ const Booking = () => {
               <Button
                 variant="contained"
                 size="large"
-                startIcon={<Payments />}
-                onClick={handleCompletePayment}
-                disabled={!isFormValid()}
+                startIcon={<EventAvailable />}
+                onClick={handleBookSlot}
+                disabled={isFull}
                 fullWidth
                 sx={{
                   px: 4,
@@ -169,7 +122,7 @@ const Booking = () => {
                   fontSize: "1rem",
                 }}
               >
-                Complete Your Payment
+                {isFull ? "Slot Full" : "Confirm Your Slot"}
               </Button>
             </Container>
           </Box>
@@ -179,4 +132,4 @@ const Booking = () => {
   );
 };
 
-export default Booking;
+export default MatchDetail;
